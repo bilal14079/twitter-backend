@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<h1> Notifications</h1>
+<ol>
+<%if @notifications.any?%>
+    <% @notifications.each do |notification|%>
+    <%# actor is helper method to get user who send notification %>
+    <strong> 
+        <li>
+            <%=link_to actor(notification.actor_id).user_name ,user_path(actor(notification.actor_id))  %> have <%= notification.action%> a 
+            <%= notification.notifiable_type%> on your 
+            <%= link_to 'tweet# '+ commented_tweet(notification.notifiable_id).to_s, tweet_path(commented_tweet(notification.notifiable_id)) %>
+        </li> 
+    </strong>
+      <%= link_to 'Mark as Read', notification, method: :patch %>
+    <%end%>
+<%else%>
+<h3>No Recent Notifications</h3>
+<%end%>
+
+</ol>
+
+
+ 

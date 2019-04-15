@@ -1,0 +1,67 @@
+
+<br/>
+<div class="container" style="width:1020px">
+  <div class="row">
+    <div class="col">
+      <section>
+          <ul class="follow-ul">
+            <%= render 'users/shared/stats' %>
+          </ul>
+          <div class="tweets">
+            <% if @tweets.any?%>        
+                    <% @tweets.each do |tweet| %>
+                    <div class="container" style="margin-left:80px;width:900px">
+                      <div class="row tweet">
+                        <div class="col-lg-12 col-sm-10">
+                          <div class="user-name">
+                              <%= image_tag(url_for('img_avatar.png'), size: '50x50', class: "avatar") %>
+                              <b> <%= tweet.user.name %></b>  @<%= link_to tweet.user.user_name, user_path(tweet.user)  %> . <%= tweet.created_at.to_date %>
+                                  <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle btn-dropdown" type="button" data-toggle="dropdown">
+                                    <span class="caret"></span></button>
+                                    <ul class="dropdown-menu pull-right">
+                                      <li><% if can? :update, tweet %> <%= link_to 'Edit', edit_tweet_path(tweet) %> <%end%> </li>
+                                      <li><% if can? :destroy, tweet %> <%= link_to 'Delete', tweet, method: :delete, data: { confirm: 'Are you sure?' } %><%end%></li>       
+                                    </ul>
+                                  </div>
+                                    
+                                
+                            </div>
+                            <div class="title">
+                              <b> <%= link_to tweet.tweet_title, tweet, controller: 'tweets', action: 'show' %></b>                       
+                            </div>
+                            <div class="tweet-content">
+                              <%= tweet.tweet_content %>
+                              <%if tweet.cover_picture.attached?%>                            
+                                <%= image_tag(url_for(tweet.cover_picture ), size: '650x500', class: 'tweet-image') %>
+                              <%end%>
+                            </div>                        
+                            <div class="tweet-likes">                                  
+                            <% if already_liked?(tweet) %> 
+                              <div class="like">                              
+                                  <%= link_to '<i class="fa fa-heart" style="font-size:20px;padding-left:10px;margin-right:6px;margin-top:10px"></i> '.html_safe, like_tweet_path(tweet), remote: true, method: :post %>
+                              </div>
+                            <% else %>
+                              <div class="unlike">
+                                  <%= link_to '<i class="fa fa-heart " style="font-size:20px;padding-left:10px;margin-top:10px;margin-right:6px"></i> '.html_safe, like_tweet_path(tweet), remote: true, method: :post %>
+                              </div>
+                            <% end %>    
+                            <%= tweet.likes.count %>
+                            <%= link_to '<i class="fa fa-comment icon-red" style="font-size:20px;padding-left:20px;margin-top:10px;margin-right:6px"></i> '.html_safe, tweet_path(tweet) %>
+                            <%= tweet.comments.count %>
+                            <%= social_share_button_tag(tweet.tweet_content) %><br><br>      
+                          </div>
+                           
+                        </div>
+                      </div>
+                    </div>                  
+                    <% end %>
+                <br>
+            <% end %>
+          </div>
+          <%= will_paginate @tweets %>
+      </section>  
+    </div>
+  </div>
+</div>
+  

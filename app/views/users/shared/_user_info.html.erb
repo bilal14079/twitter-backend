@@ -1,0 +1,18 @@
+
+<% @user ||= current_user %>
+<div class="user-info">
+    <h1>User Profile</h1>
+    Name: 
+    <strong id="name">
+      <%= @user.name %>
+    </strong><br>
+      User Name: 
+    <strong id="user-name">
+      <%= @user.user_name %>
+    </strong><br>
+      Email: 
+    <strong id="email">
+      <%= @user.email %>
+    </strong><br>
+
+</div>

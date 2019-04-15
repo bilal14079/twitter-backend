@@ -1,0 +1,28 @@
+
+<div class="row">
+    <div class="col">
+      <section>
+          
+          <div class="tweets">
+            <% if @users.any?%>
+              <h3>Users for your search</h3>         
+                    <% @users.each do |user| %>
+                    <div class="container">
+                      <div class="row tweet">
+                          <div class="col-lg-7">
+                            <div class="user-name">
+                              <b> <%=user.name %></b>  @<%= link_to user.user_name, user_path(user) %> 
+                            </div>
+                            <hr style="width:300px" />
+                          </div>
+                      </div>                  
+                    </div>                  
+                    <% end %>
+                <br>
+            <% else %>
+                <h1>No such user found</h1>
+            <% end %>
+          </div>
+      </section>  
+    </div>
+  </div>

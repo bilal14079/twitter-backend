@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Twitter</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= action_cable_meta_tag %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <link href="//use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
+  <script>
+   function load_current_user() {
+      var current_user_id;
+      current_user_id = document.getElementById('current-user').value;
+      this.App || (this.App = {});
+      App.cable = ActionCable.createConsumer('/cable/' + '?user_id=' + current_user_id);
+      App.room = App.cable.subscriptions.create("RoomChannel", {
+        connected: function() {
+          return console.log(' room connected');
+        },
+        disconnected: function() {
+          return console.log('disconnected');
+        },
+        received: function(data) {
+          return console.log(data);
+        },
+        speak: function() {
+          return this.perform('speak');
+        }
+        });
+   }
+  </script>
+  
+  </head>
+  <body onload="load_current_user()">
+    <%if current_user.present?%>
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div id="header">
+            <ul class="nav navbar-nav">
+              <li class="<%= 'active' if request.path == '/home/index' %>" ><%= link_to '<i class="fa fa-home icon-white" style="font-size:15px"></i> Home '.html_safe, home_index_path %></li>
+              <li class="<%= 'active' if request.path == '/notifications' %>" ><%= link_to '<i class="fa fa-bell icon-white" style="font-size:15px"></i> Notifications'.html_safe, controller: 'notifications', action: 'index' %></li>
+              <li class="nav-list"><%= link_to "logout", destroy_user_session_path, method: :delete %></li>
+            </ul>             
+          </div>
+          <form class="navbar-form nav-search" action="/users/search" method="get">
+            <div class="form-group">
+              <input name="name" type="text" id="search-val" class="form-control" placeholder="Search">
+            </div>
+          </form>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-list new-tweet <%= 'active' if request.path == '/tweets/new' %>" ><%= button_to 'Tweet', new_tweet_path, method: 'get'  %></li>
+            <li><%= link_to '<i class="fa fa-user icon-white" style="font-size:18px"></i> '.html_safe, user_path(current_user.id) %></li>
+          </ul>
+        </div>
+      </nav>
+      <input type="hidden" id="current-user" value='<%= current_user.id%>'  />
+    <%else%>
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Twitter</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="/">Home</a></li>
+          <li class="active"><a href="/users/sign_in">Login</a></li>
+        </ul>
+      </div>
+    </nav>
+    <%end %>
+
+      <% if notice %>
+      <p class="alert alert-success"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p class="alert alert-danger"><%= alert %></p>
+      <% end %>
+    <%= yield %>
+  </body>
+</html>
+
+

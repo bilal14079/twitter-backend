@@ -1,0 +1,6 @@
+<div class="comment-edit">
+  <%= form_tag(update_comment_path(@comment), method: :put) do %>
+      <%= text_area_tag(:comment, @comment.comment_body) %><br>
+      <%= submit_tag("Edit a comment") %>
+    <% end %>
+</div>

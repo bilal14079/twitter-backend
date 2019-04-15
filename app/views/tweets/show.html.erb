@@ -1,0 +1,64 @@
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <section>
+          <div class="@tweets">
+            <% if @tweet.present?%>               
+                    <div class="container">
+                      <div class="row tweet">
+                          <div class="col-lg-12 col-sm-10">
+                          <div class="user-name">
+                              <b> <%= @tweet.user.name %></b>  @<%= link_to @tweet.user.user_name, user_path(@tweet.user)  %> . <%= @tweet.created_at.to_date %>
+                                  <% if can? :update, @tweet %> <%= link_to 'Edit', edit_tweet_path(@tweet) %> <%end%>     
+                                  <% if can? :destroy, @tweet %> <%= link_to 'Destroy', @tweet, method: :delete, data: { confirm: 'Are you sure?' } %><%end%>                          
+                            </div>
+                            <div class="title">
+                              <b> <%= link_to @tweet.tweet_title, @tweet, controller: 'tweets', action: 'show' %></b>                       
+                            </div>
+                            <div class="tweet-content">
+                              <%= @tweet.tweet_content %>
+                              <%if @tweet.cover_picture.attached?%>                            
+                                <%= image_tag(url_for(@tweet.cover_picture ), size: '600x500') %>
+                              <%end%>
+                            </div>                           
+                            <div class="tweet-likes">      
+                              <% if already_liked?(@tweet) %> 
+                              <div class="like" id='like'>                              
+                                  <%= link_to '<i class="fa fa-heart" style="font-size:20px;display:inline"></i> '.html_safe, like_tweet_path(@tweet), remote: true, method: :post %>
+                              </div>
+                            <% else %>
+                              <div class="unlike">
+                                  <%= link_to '<i class="fa fa-heart " style="font-size:20px"></i> '.html_safe, like_tweet_path(@tweet), remote: true, method: :post %>
+                              </div>
+                            <% end %>    
+                            <strong><%= @tweet.likes.count %></strong>
+                            <%= link_to '<i class="fa fa-comment" style="font-size:20px"></i> '.html_safe, tweet_path(@tweet) %>
+                            <strong><%= @tweet.comments.count %></strong>
+                            <%= social_share_button_tag(@tweet.tweet_content) %><br><br>
+                            </div>                          
+                              <div class="comments">
+                                <% if @tweet.comments.any? %>
+                                      <b><h2>Comments</h2></b>
+                                      <% @tweet.comments.each do |comment|%> 
+                                      <h5><b> <%= comment.user.name %></b> @<%=comment.user.user_name%></h5>
+                                      <p>- <%= comment.comment_body%>
+                                      <% if can? :update, @tweet %> <%= link_to 'Edit', edit_tweet_comment_url(@tweet,comment) %> <%end%>     
+                                      <% if can? :destroy, @tweet %> <%= link_to 'Delete', destroy_comment_url(@tweet,comment), method: :delete, data: { confirm: 'Are you sure?' } %> </p><%end%> 
+                                      <%end%>
+                                <%end%>
+                              </div>
+                               <%= form_tag(create_comment_path(@tweet), method: :post) do %>
+                                <%= text_area_tag(:comment) %><br>
+                                <%= submit_tag("Add a comment") %>
+                              <% end %>
+                          </div>
+                      </div>
+                    </div>                                     
+                <br>
+            <% end %>
+          </div>
+      </section>  
+    </div>
+  </div>
+</div>
